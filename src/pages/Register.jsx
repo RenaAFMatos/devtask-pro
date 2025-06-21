@@ -1,12 +1,14 @@
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useState } from "react";
 import { auth } from "../services/firebase";
+import {useNavigate} from "react-router-dom";
 
 export default function Register() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [error, setError] = useState("");
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -39,6 +41,7 @@ export default function Register() {
             setEmail("");
             setPassword("");
             setConfirmPassword("");
+            navigate("/");
         } catch (error) {
             console.error("Registration error:", error.message);
         }
