@@ -12,6 +12,7 @@ function App() {
         <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
         <p>Welcome to the app layout!</p>
         <TaskForm />
+        <h1>Renato Matos</h1>
       </main>
       </div>
     </div>
