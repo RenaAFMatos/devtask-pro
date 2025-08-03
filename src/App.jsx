@@ -8,11 +8,10 @@ function App() {
       <Navbar />
       <div className="flex flex-1">
         <Sidebar />
-      <main className="flex-1 bg-gray-400 p-6 overflow-y-auto">
-        <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
-        <p>Welcome to the app layout!</p>
+      <main className="flex-1 bg-white p-6 overflow-y-auto">
+        <h1 className="text-2xl font-bold mb-4 text-blue-500 text-shadow">Dashboard</h1>
         <TaskForm />
-      </main>
+      </main> 
       </div>
     </div>
   );
