@@ -10,7 +10,7 @@ function App() {
         <Sidebar />
       <main className="flex-1 bg-white p-6 overflow-y-auto">
         <h1 className="text-2xl font-bold mb-4 text-blue-500 text-shadow">Dashboard</h1>
-        <TaskForm />
+        <TaskForm />1
       </main> 
       </div>
     </div>

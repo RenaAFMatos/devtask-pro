@@ -2,11 +2,13 @@ import { serverTimestamp } from "firebase/firestore";
 import { useState } from "react";
 import { addTask } from "../services/taskService";
 import { useAuth } from "../store/useAuthStore";
-import {getTasksForUser} from "../services/taskService"
+import TaskList from "./TaskList.jsx";
+
 
 export default function TaskForm(){
     const {user} = useAuth();
     const [taskName, setTaskName] = useState("");
+    const [refreshKey, setRefreshKey] = useState(0);
 
     // Return early if no user
     if (!user) {
@@ -36,6 +38,7 @@ export default function TaskForm(){
                 await addTask(taskToAdd);
                 console.log("Task added successfully");
                 setTaskName(""); // Clear the input
+                setRefreshKey(prevKey => prevKey + 1); // Trigger re-render
             }
         }
         catch(error) {
@@ -60,9 +63,7 @@ export default function TaskForm(){
                     <button type="submit" className="bg-blue-600 text-white font-bold py-2 px-2 rounded-lg flex-none">Add Task</button>
                 </div>
             </form>
-            <div className="shadow-lg shadow-black border-2 border-gray-300 rounded-lg p-4 mt-4">
-                2121
-            </div>
+            <TaskList key={refreshKey} />
         </>
     )
 }
