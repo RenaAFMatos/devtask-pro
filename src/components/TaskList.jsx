@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion";
+import { Pencil, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { updateTaskStatus } from "../services/taskService";
+import { updateTask, updateTaskStatus, deleteTask } from "../services/taskService";
 import { useAuth } from "../store/useAuthStore";
 import { useTaskStore } from "../store/useTaskStore";
 import EditTaskModal from "./EditTaskModal";
@@ -47,6 +48,32 @@ export default function TaskList() {
         }
     };
 
+    const handleUpdateTask = async (taskId, updates) => {
+        try {
+            // Validate updates object
+            if (!updates || !updates.title) {
+                throw new Error("Invalid update data");
+            }
+
+            await updateTask(taskId, updates);
+            await fetchTasks(user.uid); // Pass user.uid to fetchTasks
+        } catch (error) {
+            console.error("Error updating task:", error);
+            throw error; // Propagate error to EditTaskModal
+        }
+    };
+
+    const handleDelete = async (taskId) =>{
+        try{
+            removeTask(taskId); // Optimistic UI update
+            await deleteTask(taskId);
+            console.log("🗑️ Task deleted successfully");
+        }catch(err){
+            console.error("❌ Error deleting task:", err);
+            alert("Failed to delete task: " + err.message);
+            fetchTasks(user.uid); // Re-fetch tasks to restore state
+        }
+    }
 
     const taskVariants = {
         initial: { opacity: 0, y: 20 },
@@ -65,7 +92,7 @@ export default function TaskList() {
                     initial="initial"
                     animate="animate"
                     exit="exit"
-                    className="p-4 border rounded-xl bg-white text-black hover:bg-zinc-300 transition-colors duration-300 flex items-center relative"
+                    className="p-4 border rounded-xl bg-white text-black flex items-center relative"
                 >
                     <input
                         type="checkbox"
@@ -83,15 +110,20 @@ export default function TaskList() {
                         transition={{ duration: 0.3 }}
                     />
                     </h3>
-                    <button className="bg-yellow-500 text-white px-3 py-1 rounded-lg  hover:bg-yellow-600 hover:cursor-pointer transition-colors duration-300" onClick={()=> handleEditClick(task)}>Edit</button>
+                    <button className="bg-yellow-500 text-white p-2 mr-1 rounded-lg  hover:bg-yellow-600 hover:cursor-pointer transition-colors duration-300" onClick={()=> handleEditClick(task)}><Pencil size={18}/></button>
+                    <button className="bg-red-500 text-white p-2 rounded-lg hover:cursor-pointer hover:bg-red-600" onClick={()=>handleDelete(task.id)}><Trash2 size={18}/></button>
                 </motion.div>
                 ))}
             </AnimatePresence>
             </div>
 
             {isEditModalOpen && (
-                <EditTaskModal task={taskToEdit} onClose={() => setIsEdtitModalOpen(false)}/>
-        )}
+                <EditTaskModal
+                    task={taskToEdit}
+                    onClose={() => setIsEdtitModalOpen(false)}
+                    onUpdate={handleUpdateTask}
+                />
+            )}
         </>
     );
 }

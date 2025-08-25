@@ -5,7 +5,9 @@ import {
 	getDocs,
 	query,
 	setDoc,
+	updateDoc,
 	where,
+	deleteDoc
 } from "firebase/firestore";
 import { db } from "./firebase";
 
@@ -38,3 +40,21 @@ export const updateTaskStatus = async (taskId, completed) => {
 	// Use setDoc with merge to create or update the document
 	await setDoc(taskRef, { completed }, { merge: true });
 };
+
+// Update a task with given updates
+export const updateTask = async (taskId, updates) => {
+	const taskRef = doc(db, "tasks", taskId);
+	await updateDoc(taskRef, updates);
+};
+
+export const deleteTask = async (taskId) => {
+	const taskRef = doc(db, "tasks", taskId)
+	try{
+		await deleteDoc(taskRef);
+		console.log("✅ Task deleted successfully");
+	}catch(err){
+		console.error("❌ Error deleting task:", err);
+		throw err;
+	}
+	
+}
